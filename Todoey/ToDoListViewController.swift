@@ -11,10 +11,15 @@ import UIKit
 class ToDoListViewController: UITableViewController {
     
     var itemArray = ["Fine Mike", "Buy Eggos", "Destroy Demogorgon"]
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+            itemArray = items
+        }
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
@@ -29,6 +34,7 @@ class ToDoListViewController: UITableViewController {
     }
     
     //MARK - TableView Delegate Methods
+    //This allows a checkmark to be added and removed
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //print(itemArray[indexPath.row])
         
@@ -53,8 +59,12 @@ class ToDoListViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add item", style: .default) { (action) in
             //what will happen once the user clicks the add item button on our UIAlert
+            //Below allows you to add a new item to the itemArray using the append feature
+            //Then once it is added, you need to reloadData() to update the tableView
             
             self.itemArray.append(textField.text!)
+            
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")
             self.tableView.reloadData()
         }
         
